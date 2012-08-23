@@ -1,4 +1,26 @@
 DROUGHT-BOM-GRIDS
 =================
 
-DROUGHT-BOM-GRIDS
+ABSTRACT:
+----
+This is monthly drought data for Australia 1890-2008 using the Hutchinson Drought Index applied to Bureau of Meteorology (BoM) gridded weather data.  The source weather dataset is monthly interpolations of rainfall data 1890-2008 from BoM weather stations, gridded at 0.25 degree of latitude-longitude across Australia.
+
+The algorithm used to calculate the drought index using the Hutchinson method is stored in this repository.  
+The source weather data can be accessed from the principal investigators:  Peter Powers and Dean Collins, National Climate Centre, BoM.
+
+TODO
+====
+The source weather data are not easily accessible.  It would be good to deposit these into a repository such as the Australian Data Archives.
+Doing this will need agreement from the original authors at the BoM.
+
+Bibiliographic Citation
+----
+The National Climate Centre. Australian gridded rainfall (1890-2008) and temperature (1950-2008) data at 0.25 degree of latitude-longitude: The Bureau of Meteorology Research Centre, 700 Collins Street, Docklands, Melbourne, VIC, 3008. 2004.
+
+RELATED MATERIAL:
+----
+
+Koch, SE, M DesJardins, and PJ Kocin. An interactive Barnes objective map analysis scheme for use with satellite and conventional data. Journal of Climate and Applied Meteorology 22, no. 9 (1983): 1487-1503. http://www.dca.ufcg.edu.br/grads/gs/Barnes/Barnes_02.pdf.
+
+Jones, DA, and G Weymouth. An Australian monthly rainfall dataset, 1997. Bureau of Meteorology, Technical Report 70.
+
