@@ -6,6 +6,11 @@
 #+LATEX: \tableofcontents
 -----
 
+* TODOLIST
+** TODO need to add metadata
+** TODO do an annual average rainfall and compare with the poa_weather data
+** TODO start a new project to join drought with nceph study BOUNDARIES_ELECTORATES
+* LOAD
 Before restoring an SQL dump, all the users who own objects or were granted permissions on objects in the dumped database must already exist. If they do not, the restore will fail to recreate the objects with the original ownership and/or permissions. (Sometimes this is what you want, but usually it is not.)
 #+name:prepare ewedb
 #+begin_src R :session *shell* :tangle src/prepare ewedb.r :exports none :eval no
@@ -64,6 +69,15 @@ GRANT ALL ON TABLE bom_grids.rain_aus_1890_2008_4 TO public_group;
 
 
 pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_1890_2008_4\" delphe | psql -h 115.146.94.209 -U postgres ewedb
+
+# test electorates
+psql -h 115.146.94.209 -d ewedb -U postgres
+CREATE ROLE student_group;
+CREATE SCHEMA boundaries_electorates;
+grant usage on schema boundaries_electorates to public_group;
+
+pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"boundaries_electorates\".\"electorates2009\" delphe | psql -h 115.146.94.209 -U postgres ewedb
+
 #+end_src
 
 
