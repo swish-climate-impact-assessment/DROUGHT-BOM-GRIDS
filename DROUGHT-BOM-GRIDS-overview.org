@@ -169,6 +169,7 @@ pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"boundaries_electorates\
   ddixml <- make_xml(s,f,d)
   }
   out <- dir(pattern='xml')
+  file.remove(file.path('/xmldata', out))
   file.copy(out, '/xmldata')
   
 #+end_src
