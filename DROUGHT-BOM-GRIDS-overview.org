@@ -282,7 +282,7 @@ pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"boundaries_electorates\
  
 
 
-* TODO Check
+* TODO Check an electorate
 #+name:check
 #+begin_src R :session *R* :tangle src/check.r :exports none :eval no
   ###########################################################################
@@ -290,6 +290,7 @@ pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"boundaries_electorates\
     source('~/tools/delphe-project/tools/connect2postgres.r')
     ewedb <- connect2postgres()
     source('~/tools/delphe-project/tools/readOGR2.r')
+    require('rgdal')
     source('~/tools/delphe-project/tools/fixGeom.r')
     pwd <-  readline('session password = ')
   # ~/Dropbox/data/drought/HutchinsonIndex/versions/2011-04-23/reports/DroughtDSpatial.png
@@ -413,7 +414,7 @@ pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"boundaries_electorates\
   
   # now loop through years and months to plot them
   
-  for(j in 1978){#:1983){
+  for(j in 1978:1983){
         print(j)
         plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
         text(1.5,1.5,j) #substr(j,3,4))
@@ -423,9 +424,15 @@ pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"boundaries_electorates\
   }
   
   # and finally the legend
-  
+  level.labels <- c('[-4,-3]', '(-3,-2]', '(-2,-1]', '(-1,0]', '(0,1]',
+  '(1,2]', '(2,3]', '(3,4]')
+  bins <-  c(-4,-3,-2,-1,0,1,2,3,4)
+  col.vec = brewer.pal(length(bins),"RdYlBu")
   plot(1,1,type = 'n',axes=F)
   legend("top", level.labels, fill=col.vec, title="Legend")
   
 #+end_src
+
+
+* Check the whole state
 
