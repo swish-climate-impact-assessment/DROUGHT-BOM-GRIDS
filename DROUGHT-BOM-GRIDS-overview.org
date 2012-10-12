@@ -80,6 +80,7 @@ pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"boundaries_electorates\
 
 #+end_src
 
+* CLEAN
 * Metadata
 
 *** add metadata using df2ddi bomgrids
