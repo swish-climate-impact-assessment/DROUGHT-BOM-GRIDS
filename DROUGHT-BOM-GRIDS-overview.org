@@ -644,7 +644,7 @@ pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"boundaries_electorates\
               ",sep=""))
   shp <- readOGR2('130.56.102.41','ivan_hanigan','delphe',paste('tempdrt',year,month,sep=''), p = pwd)
   plot(d)
-  plot(shp,add=T)
+  plot(shp,add=T, col='black')
   
 #+end_src
 
