@@ -39,9 +39,40 @@ for(year in 1970:1980){
   }
 }
 
-shp <- readOGR2('115.146.94.209','ivan_hanigan','ewedb',paste('tempdrt',year,month,sep=''), p = pwd)
-plot(d)
-plot(shp,add=T, col='black')
+
+
+
+
+
+  png('droughtAdvRet_19002008.jpg',type='jpeg',res=400,height=20,width=5)
+  par(mfrow=c(110,13),mar=c(0,0,0,0))
+  plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
+
+  for(mm in c('j','f','m','a', 'm','j','j','a','s','o','n','d')){
+  plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
+  text(1.5,1.5,mm)
+  }
+
+  for(j in 1970:1980){
+  print(j)
+  year <- j
+           plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
+           text(1.5,1.5,j) #substr(j,3,4))
+
+           for(i in 1:12){
+             plot(d)
+             month <- i
+             shp <- readOGR2('115.146.94.209','ivan_hanigan','ewedb',paste('tempdrt',year,month,sep=''),
+             p = pwd)
+             plot(shp,add=T, col='black')
+             #plot_drought(j,i)
+           }
+
+  }
+
+  # this is the first one 1972-2008 savePlot('droughtAdvRet.jpg',type=c('jpg'))
+  #savePlot('droughtAdvRet_19002008.tiff',type=c('tiff'))
+  dev.off()
 
 dbSendQuery(ewedb,
             paste('drop table tempdrt',year,month,sep='')
