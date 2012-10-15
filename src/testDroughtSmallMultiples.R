@@ -9,9 +9,9 @@
   require('rgdal')
   source('~/tools/delphe-project/tools/fixGeom.r')
 
-
-  d <- readOGR2('130.56.102.41','ivan_hanigan','delphe','abs_sd.nswsd01', p = pwd)
-  plot(d)
+d <- readOGR2('130.56.102.41','ivan_hanigan','delphe','spatial.admin00_aus_states', p = pwd)
+d <- d[d@data$admin_name == 'New South Wales',]
+plot(d)
   for(year in 1970:1980){
   #year <- 1972
     for(month in 1:12){
@@ -68,17 +68,16 @@ for(j in 1970:1980){
 
     }
 
+  png('../droughtAdvRet_19722008.png',res=150,height=2000,width=1500)
+  par(mfrow=c(11,13),mar=c(0,0,0,0))
+  plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
 
-    png('droughtAdvRet_19002008.jpg',type='jpeg',res=400,height=20,width=5)
-    par(mfrow=c(110,13),mar=c(0,0,0,0))
-    plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
-
-    for(mm in c('j','f','m','a', 'm','j','j','a','s','o','n','d')){
+  for(mm in toupper(c('j','f','m','a', 'm','j','j','a','s','o','n','d'))){
     plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
     text(1.5,1.5,mm)
     }
 
-    for(j in 1970:1980){
+    for(j in 1972:1980){
     print(j)
     year <- j
              plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
@@ -87,15 +86,11 @@ for(j in 1970:1980){
              for(i in 1:12){
                plot(d)
                month <- i
-               try(shp <- readOGR2('115.146.94.209','ivan_hanigan','ewedb',paste('tempdrt',year,month,sep=''),
-               p = pwd)
-               )
-               if(exists('shp')) {writeOGR(shp,
-               paste('tempdrt',year,month,'.shp',sep=''), layer =
-               paste('tempdrt',year,month,sep=''), 'ESRI Shapefile')
-                                }
-# plot(shp,add=T, col='black')
-               #plot_drought(j,i)
+
+             try(shp <- readOGR(paste('tempdrt',year,month,'.shp',sep=''),paste('tempdrt',year,month,sep='')
+             )
+             )
+             if(exists('shp')) { plot(shp,add=T, col='black')}
              }
 
     }
