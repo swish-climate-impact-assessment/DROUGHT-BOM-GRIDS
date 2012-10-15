@@ -43,6 +43,31 @@
 
 
 
+# going to want to do a straight copy and an enhanced version with
+# continuous levels?  not yet
+dir.create('data')
+setwd('data')
+for(j in 1970:1980){
+#j <- 1970
+  print(j)
+    year <- j
+
+             for(i in 1:12){
+#i <- 1
+               month <- i
+               try(shp <- readOGR2('115.146.94.209','ivan_hanigan','ewedb',paste('tempdrt',year,month,sep=''),
+               p = pwd)
+               )
+               if(exists('shp')) {writeOGR(shp,
+               paste('tempdrt',year,month,'.shp',sep=''), layer =
+               paste('tempdrt',year,month,sep=''), 'ESRI Shapefile')
+                                }
+# plot(shp,add=T, col='black')
+               #plot_drought(j,i)
+             }
+
+    }
+
 
     png('droughtAdvRet_19002008.jpg',type='jpeg',res=400,height=20,width=5)
     par(mfrow=c(110,13),mar=c(0,0,0,0))
