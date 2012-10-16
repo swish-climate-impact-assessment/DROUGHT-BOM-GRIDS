@@ -68,8 +68,8 @@ for(j in 1970:1980){
 
     }
 
-  png('../droughtAdvRet_19722008.png',res=150,height=2000,width=1500)
-  par(mfrow=c(11,13),mar=c(0,0,0,0))
+  png('../droughtAdvRet_19722008.png',res=150,height=2000,width=1000)
+  par(mfrow=c(41,13),mar=c(0,0,0,0))
   plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
 
   for(mm in toupper(c('j','f','m','a', 'm','j','j','a','s','o','n','d'))){
@@ -77,7 +77,7 @@ for(j in 1970:1980){
     text(1.5,1.5,mm)
     }
 
-    for(j in 1972:1980){
+    for(j in 1972:2011){
     print(j)
     year <- j
              plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
@@ -91,6 +91,7 @@ for(j in 1970:1980){
              )
              )
              if(exists('shp')) { plot(shp,add=T, col='black')}
+             rm(shp)
              }
 
     }
