@@ -71,12 +71,12 @@ GRANT ALL ON TABLE bom_grids.rain_aus_1890_2008_4 TO public_group;
 pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_1890_2008_4\" delphe | psql -h 115.146.95.82 -U postgres ewedb
 
 # test electorates
-psql -h 115.146.94.209 -d ewedb -U postgres
+psql -h 115.146.95.82 -d ewedb -U postgres
 CREATE ROLE student_group;
 CREATE SCHEMA boundaries_electorates;
 grant usage on schema boundaries_electorates to public_group;
 
-pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"boundaries_electorates\".\"electorates2009\" delphe | psql -h 115.146.94.209 -U postgres ewedb
+pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"boundaries_electorates\".\"electorates2009\" delphe | psql -h 115.146.95.82 -U postgres ewedb
 
 #+end_src
 
