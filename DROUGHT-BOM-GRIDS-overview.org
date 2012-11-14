@@ -69,6 +69,12 @@ GRANT ALL ON TABLE bom_grids.rain_aus_1890_2008_4 TO public_group;
 
 
 pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_1890_2008_4\" delphe | psql -h 115.146.95.82 -U postgres ewedb
+#+end_src
+* DEPRECATED electorates stuff
+#+name:electorates
+#+begin_src R :session *shell* :tangle src/electorates.r :exports none :eval no
+###########################################################################
+# newnode: electorates
 
 # this is a test electorates
 # for proper see /nceph_online/NCEPH_Data/NCEPH_Datasets/Unrestricted/BOUNDARIES_ELECTORATES/load_boundaries_electorates.org
