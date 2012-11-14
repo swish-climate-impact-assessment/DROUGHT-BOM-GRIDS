@@ -14,18 +14,18 @@
 Before restoring an SQL dump, all the users who own objects or were granted permissions on objects in the dumped database must already exist. If they do not, the restore will fail to recreate the objects with the original ownership and/or permissions. (Sometimes this is what you want, but usually it is not.)
 #+name:prepare ewedb
 #+begin_src R :session *shell* :tangle src/prepare ewedb.r :exports none :eval no
-###########################################################################
-# newnode: prepare ewedb
-psql -h 115.146.95.82 -d ewedb -U postgres
-CREATE ROLE public_group;
-CREATE SCHEMA bom_grids;
-grant usage on schema bom_grids to public_group;
-CREATE ROLE ivan_hanigan LOGIN PASSWORD 'XXXX';
-GRANT ALL ON SCHEMA bom_grids to ivan_hanigan;
-\q
-# add to pg_hba
-reload
-select pg_reload_conf();
+  ###########################################################################
+  # newnode: prepare ewedb
+  psql -h 115.146.95.82 -d ewedb -U postgres
+  CREATE ROLE public_group;
+  CREATE SCHEMA bom_grids;
+  grant usage on schema bom_grids to public_group;
+  CREATE ROLE ivan_hanigan LOGIN PASSWORD 'XXXX';
+  GRANT ALL ON SCHEMA bom_grids to ivan_hanigan;
+  \q
+  # add to pg_hba
+  reload
+  select pg_reload_conf();
 #+end_src
 
 #+name:dump and restore
@@ -77,6 +77,20 @@ CREATE SCHEMA boundaries_electorates;
 grant usage on schema boundaries_electorates to public_group;
 
 pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"boundaries_electorates\".\"electorates2009\" delphe | psql -h 115.146.95.82 -U postgres ewedb
+# trying this on the production box got 
+# ERROR:  function public.ndims(public.geometry) does not exist
+# HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+# ERROR:  relation "boundaries_electorates.electorates2009" does not exist
+# ERROR:  relation "com_elb_region_gid_seq" already exists
+# ALTER TABLE
+# ERROR:  relation "electorates2009" does not exist
+#  setval 
+# --------
+#     150
+# (1 row)
+
+# ERROR:  relation "electorates2009" does not exist
+# ERROR:  relation "electorates2009" does not exist
 
 #+end_src
 
