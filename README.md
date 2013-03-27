@@ -13,7 +13,7 @@ Bibiliographic Citation
 ----
 The National Climate Centre. Australian gridded rainfall (1890-2008) and temperature (1950-2008) data at 0.25 degree of latitude-longitude: The Bureau of Meteorology Research Centre, 700 Collins Street, Docklands, Melbourne, VIC, 3008. 2004.
 
-Smith DI, Hutchinson MF, McArthur RJ. Climatic and Agricultural Drought: Payments and Policy 1992. Centre for Resource and Environmental Studies, Australian National University, Canberra, Australia. http://fennerschool-research.anu.edu.au/geofabric/publications/cres_paper1992.pdfHanigan 
+Smith DI, Hutchinson MF, McArthur RJ. Climatic and Agricultural Drought: Payments and Policy 1992. Centre for Resource and Environmental Studies, Australian National University, Canberra, Australia. http://fennerschool-research.anu.edu.au/spatio-temporal/publications/cres_paper1992.pdf
 
 RELATED MATERIAL:
 ----
