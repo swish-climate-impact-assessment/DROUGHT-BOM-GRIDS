@@ -1,6 +1,9 @@
 DROUGHT-BOM-GRIDS
 =================
 
+This repo is deprecated.  Please see [https://github.com/ivanhanigan/HutchinsonDroughtIndex](https://github.com/ivanhanigan/HutchinsonDroughtIndex) for ongoing work such as [this exploratory data analysis](http://ivanhanigan.github.io/2013/11/github-and-reproducible-research-report-casestudy-hutchinson-drought-index/)
+
+
 ABSTRACT:
 ----
 This is monthly drought data for Australia 1890-2008 using the Hutchinson Drought Index applied to Bureau of Meteorology (BoM) gridded weather data.  The source weather dataset is monthly interpolations of rainfall data 1890-2008 from BoM weather stations, gridded at 0.25 degree of latitude-longitude across Australia.
