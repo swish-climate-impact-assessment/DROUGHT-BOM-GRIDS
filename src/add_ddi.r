@@ -1,11 +1,13 @@
 
 ################################################################
 # name:add_ddi
-setwd('~/DROUGHT-BOM-GRIDS')
-source('~/disentangle/src/df2ddi.r')
-source('~/delphe-project/tools/connect2postgres.r')
+setwd('~/projects/DROUGHT-BOM-GRIDS')
+source('~/projects/disentangle/src/df2ddi.r')
+source('~/projects/disentangle/src/connect2postgres.r')
 ewedb <- connect2postgres()
 if(!require(rgdal)) install.packages('rgdal'); require(rgdal)
+if(!require(RJDBC)) install.packages('RJDBC'); require(RJDBC)
+connect2oracle <- function(){
 if(!require(RJDBC)) install.packages('RJDBC'); require(RJDBC)
 drv <- JDBC("oracle.jdbc.driver.OracleDriver",
             '/u01/app/oracle/product/11.2.0/xe/jdbc/lib/ojdbc6.jar')
@@ -13,21 +15,24 @@ p <- readline('enter password: ')
 h <- readline('enter target ipaddres: ')
 d <- readline('enter database name: ')
 ch <- dbConnect(drv,paste("jdbc:oracle:thin:@",h,":1521",sep=''),d,p)
+return(ch)
+}
+ch <- connect2oracle()
 
 #dir.create('metadata')
-s <- dbGetQuery(ch, "select * from stdydscr where IDNO = 'DROUGHTBOMGRIDS'")
-#s <- add_stdydscr(ask=T)
+#s <- dbGetQuery(ch, "select * from stdydscr where IDNO = 'DROUGHTBOMGRIDS'")
+s <- add_stdydscr(ask=T)
 #write.table(s,'metadata/stdydscr.csv',sep=',',row.names=F)
 
 s$PRODDATESTDY=format(as.Date( substr(s$PRODDATESTDY,1,10),'%Y-%m-%d'),"%d/%b/%Y")
 s$PRODDATEDOC=format(as.Date( substr(s$PRODDATEDOC,1,10),'%Y-%m-%d'),"%d/%b/%Y")
 
-## dbSendUpdate(ch,
-## # cat(
-## paste('
-## insert into STDYDSCR (',paste(names(s), sep = '', collapse = ', '),')
-## VALUES (',paste("'",paste(gsub("'","",ifelse(is.na(s),'',s)),sep='',collapse="', '"),"'",sep=''),')',sep='')
-## )
+dbSendUpdate(ch,
+# cat(
+paste('
+insert into STDYDSCR (',paste(names(s), sep = '', collapse = ', '),')
+VALUES (',paste("'",paste(gsub("'","",ifelse(is.na(s),'',s)),sep='',collapse="', '"),"'",sep=''),')',sep='')
+)
 
 f <- add_filedscr(fileid = 1, idno = 'DROUGHTBOMGRIDS', ask=T)
 f$FILELOCATION <- 'bom_grids'
