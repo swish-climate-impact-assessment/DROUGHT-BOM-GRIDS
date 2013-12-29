@@ -37,11 +37,8 @@ GRANT ALL ON TABLE bom_grids.rain_aus_1890_2008_4 TO public_group;
 
 
 
-<<<<<<< HEAD
+
 pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_1890_2008_4\" delphe | psql -h 115.146.94.209 -U postgres ewedb
-=======
-pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_1890_2008_4\" delphe | psql -h 115.146.95.82 -U postgres ewedb
->>>>>>> 1047f212a9833c81db1815868c8fb077d6c8981c
 
 # test electorates
 psql -h 115.146.94.209 -d ewedb -U postgres
