@@ -11,6 +11,10 @@ This is monthly drought data for Australia 1890-2008 using the Hutchinson Drough
 The algorithm used to calculate the drought index using the Hutchinson method is stored in this repository.  
 The source weather data can be accessed from the principal investigators:  Peter Powers and Dean Collins, National Climate Centre, BoM.
 
+TODO
+====
+The source weather data are not easily accessible.  It would be good to deposit these into a repository such as the Australian Data Archives.
+Doing this will need agreement from the original authors at the BoM.
 
 Bibiliographic Citation
 ----
