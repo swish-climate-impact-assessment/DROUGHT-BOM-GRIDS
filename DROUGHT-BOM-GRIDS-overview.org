@@ -28,7 +28,7 @@ Before restoring an SQL dump, all the users who own objects or were granted perm
   select pg_reload_conf();
 #+end_src
 
-#+name:dump and restore
+* dump and restore
 #+begin_src sh :session *shell* :tangle src/dump and restore.r :exports none :eval no
 ###########################################################################
 # newnode: dump and restore
