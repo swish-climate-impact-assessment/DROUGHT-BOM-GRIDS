@@ -70,6 +70,22 @@ GRANT ALL ON TABLE bom_grids.rain_aus_1890_2008_4 TO public_group;
 
 pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_1890_2008_4\" delphe | psql -h 115.146.95.82 -U postgres ewedb
 #+end_src
+* downloads
+*** COMMENT nsw-code
+#+name:nsw
+#+begin_src R :session *R* :tangle no :exports none :eval no
+#### name:nsw####
+psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.rain_nsw_1890_2008_4) TO 'drought_bom_grids.rain_nsw_1890_2008.csv' WITH DELIMITER ',' CSV HEADER"
+
+psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.grid_nsw) TO 'drought_bom_grids.grid_nsw.csv' WITH DELIMITER ',' CSV HEADER"
+
+pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"grid_nsw\" delphe | psql -h 115.146.95.82 -U postgres ewedb
+pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_1890_2008_4\" delphe | 
+
+#+end_src
+
+
+
 * DEPRECATED electorates stuff
 #+name:electorates
 #+begin_src R :session *shell* :tangle src/electorates.r :exports none :eval no
