@@ -1,8 +1,7 @@
 
 ###########################################################################
 # newnode: prepare ewedb
-
-psql -h 115.146.94.209 -d ewedb -U postgres
+psql -h 115.146.95.82 -d ewedb -U postgres
 CREATE ROLE public_group;
 CREATE SCHEMA bom_grids;
 grant usage on schema bom_grids to public_group;

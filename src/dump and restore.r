@@ -1,17 +1,17 @@
 
 ###########################################################################
 # newnode: dump and restore
-/usr/bin/pg_dump --host 130.56.102.41 --port 5432 --username "ivan_hanigan" --role "ivan_hanigan" --no-password  --format plain --encoding UTF8 --verbose --file "/home/ivan_hanigan/projects/DROUGHT-BOM-GRIDS/data/bom_grids.rain_nsw_1890_2008_4.backup" --table "bom_grids.rain_nsw_1890_2008_4" "delphe"
+#/usr/bin/pg_dump --host 130.56.102.41 --port 5432 --username "ivan_hanigan" --role "ivan_hanigan" --no-password  --format plain --encoding UTF8 --verbose --file "/home/ivan_hanigan/projects/DROUGHT-BOM-GRIDS/data/bom_grids.rain_nsw_1890_2008_4.backup" --table "bom_grids.rain_nsw_1890_2008_4" "delphe"
 
 
 #pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -F t -v -i -f "/home/ivan_hanigan/projects/DROUGHT-BOM-GRIDS/data/bom_grids.rain_nsw_1890_2008_4.backup" -t \"bom_grids\".\"rain_nsw_1890_2008_4\" delphe
-cd /home/ivan_hanigan/projects/DROUGHT-BOM-GRIDS/data/
-psql -h 115.146.94.209 -d ewedb -U postgres < "bom_grids.rain_nsw_1890_2008_4.backup"
+#cd /home/ivan_hanigan/projects/DROUGHT-BOM-GRIDS/data/
+#psql -h 115.146.95.82 -d ewedb -U postgres < "bom_grids.rain_nsw_1890_2008_4.backup"
 
-pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"grid_aus\" delphe | psql -h 115.146.94.209 -U postgres ewedb
-pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"grid_nsw\" delphe | psql -h 115.146.94.209 -U postgres ewedb
+pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"grid_aus\" delphe | psql -h 115.146.95.82 -U postgres ewedb
+pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"grid_nsw\" delphe | psql -h 115.146.95.82 -U postgres ewedb
 
-in pgadmin
+#in pgadmin
 CREATE TABLE bom_grids.rain_aus_1890_2008_4
 (
   gid integer NOT NULL,
@@ -37,13 +37,4 @@ GRANT ALL ON TABLE bom_grids.rain_aus_1890_2008_4 TO public_group;
 
 
 
-
-pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_1890_2008_4\" delphe | psql -h 115.146.94.209 -U postgres ewedb
-
-# test electorates
-psql -h 115.146.94.209 -d ewedb -U postgres
-CREATE ROLE student_group;
-CREATE SCHEMA boundaries_electorates;
-grant usage on schema boundaries_electorates to public_group;
-
-pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"boundaries_electorates\".\"electorates2009\" delphe | psql -h 115.146.94.209 -U postgres ewedb
+pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_1890_2008_4\" delphe | psql -h 115.146.95.82 -U postgres ewedb

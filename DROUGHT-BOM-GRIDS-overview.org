@@ -698,3 +698,59 @@ To do an independent validation of the droughts I Want to reproduce the maps fro
 
 This is a cool product by the NSW Dept Primary Industry.
 
+** COMMENT check-csv-code
+#+name:check-csv
+#+begin_src R :session *R* :tangle check_csv.r :exports none :eval no
+  #### check drought CSV
+  library(sqldf)
+  
+  grid <-read.csv("drought_bom_grids.grid_nsw.csv")
+  str(grid)
+  dat <- read.csv("drought_bom_grids.rain_nsw_1890_2008.csv")
+  str(dat)
+  
+  # Parkes NSW
+  y <- -33.133333
+  x <- 148.166667
+  
+  # find closest bom grid cell, without a GIS this is a manual process
+  y <- -33.00
+  x <- 148.00
+  
+  head(grid[,c("gid", "long", "lat")])
+  
+  sql <- sprintf("select gid, long, lat
+  from grid
+  where long = %s and lat = %s",
+  round(x,2), round(y,2)
+                 )
+  cat(sql)
+  
+  gid <- sqldf(sql)
+  gid <- gid$gid
+  gid
+  
+  qc <- dat[dat$gid == gid,]
+  str(qc)
+  qc$date <- paste(qc$year, qc$month, 1, sep = "-")
+  qc$date <- as.Date(qc$date)
+  qc1 <-   subset(qc,
+              date > as.Date("1975-01-01") &
+              date < as.Date("1985-12-31")
+              )
+  par(mfrow = c(2,1))
+  with(qc1,
+    plot(date, rain, type = "l")
+    )
+  
+  with(qc1,
+    lines(date, rain6mo/12, lwd = 2)
+    )
+  
+  with(qc1,
+    plot(date, count, type = "l", col ="red")
+    )
+  abline(5,0)
+  
+  
+#+end_src
