@@ -1,16 +1,35 @@
-#+TITLE:Drought Bom Grids Overview 
+#+TITLE:Drought from BOM Grids 
 #+AUTHOR: Ivan Hanigan
 #+email: ivan.hanigan@anu.edu.au
 #+LaTeX_CLASS: article
 #+LaTeX_CLASS_OPTIONS: [a4paper]
 #+LATEX: \tableofcontents
+#+options: num:nil
 -----
+* COMMENT to change
+<ul>
+<li id="sec-2-1">Download:<br/>
+<a href="./foo.csv">foo.csv</a>
 
-* TODOLIST
+</li>
+</ul>
+* COMMENT send data
+rsync -avz -e "ssh -i /home/ivan_hanigan/tools/macpro_ssh/.ssh/id_rsa" drought_bom_grids.grid_act.csv  ivan@gislibrary.anu.edu.au:/home/ivan/
+chown apache:apache static/grid_act.csv 
+
+* Drought from BOM Grids
+**** Hanigan, Ivan (2012): Monthly drought data for Australia 1890-2008 using the Hutchinson Drought Index. Australian National University Data Commons. DOI: 10.4225/13/50BBFD7E6727A.
+
+* Data
+**** Download: 
+[[static/climate\_poa\_1990.csv]]
+
+
+* COMMENT TODOLIST
 ** TODO need to add metadata
 ** TODO do an annual average rainfall and compare with the poa_weather data
 ** DONE start a new project to join drought with nceph study BOUNDARIES_ELECTORATES
-* LOAD
+* COMMENT LOAD
 Before restoring an SQL dump, all the users who own objects or were granted permissions on objects in the dumped database must already exist. If they do not, the restore will fail to recreate the objects with the original ownership and/or permissions. (Sometimes this is what you want, but usually it is not.)
 #+name:prepare ewedb
 #+begin_src R :session *shell* :tangle src/prepare ewedb.r :exports none :eval no
@@ -26,9 +45,10 @@ Before restoring an SQL dump, all the users who own objects or were granted perm
   # add to pg_hba
   reload
   select pg_reload_conf();
+  
 #+end_src
 
-* dump and restore
+* COMMENT dump and restore
 #+begin_src sh :session *shell* :tangle src/dump and restore.r :exports none :eval no
 ###########################################################################
 # newnode: dump and restore
@@ -70,23 +90,58 @@ GRANT ALL ON TABLE bom_grids.rain_aus_1890_2008_4 TO public_group;
 
 pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_1890_2008_4\" delphe | psql -h 115.146.95.82 -U postgres ewedb
 #+end_src
-* downloads
+* COMMENT downloads
 *** COMMENT nsw-code
 #+name:nsw
 #+begin_src R :session *R* :tangle no :exports none :eval no
-#### name:nsw####
-psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.rain_nsw_1890_2008_4) TO 'drought_bom_grids.rain_nsw_1890_2008.csv' WITH DELIMITER ',' CSV HEADER"
+  #### name:nsw####
+  psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.rain_nsw_1890_2008_4) TO 'drought_bom_grids.rain_nsw_1890_2008.csv' WITH DELIMITER ',' CSV HEADER"
+  psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.grid_nsw) TO 'drought_bom_grids.grid_nsw.csv' WITH DELIMITER ',' CSV HEADER"
+  psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.rain_vic_1890_2008_4) TO '~/projects/DROUGHT-BOM-GRIDS/data/drought_bom_grids.rain_vic_1890_2008.csv' WITH DELIMITER ',' CSV HEADER"
+  psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.grid_vic) TO '~/projects/DROUGHT-BOM-GRIDS/data/drought_bom_grids.grid_vic.csv' WITH DELIMITER ',' CSV HEADER"
+  psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.rain_qld_1890_2008_4) TO '~/projects/DROUGHT-BOM-GRIDS/data/drought_bom_grids.rain_qld_1890_2008.csv' WITH DELIMITER ',' CSV HEADER"
+  psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.grid_qld) TO '~/projects/DROUGHT-BOM-GRIDS/data/drought_bom_grids.grid_qld.csv' WITH DELIMITER ',' CSV HEADER"
 
-psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.grid_nsw) TO 'drought_bom_grids.grid_nsw.csv' WITH DELIMITER ',' CSV HEADER"
+  psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.rain_tas_1890_2008_4) TO '~/projects/DROUGHT-BOM-GRIDS/data/drought_bom_grids.rain_tas_1890_2008.csv' WITH DELIMITER ',' CSV HEADER"
+  psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.grid_tas) TO '~/projects/DROUGHT-BOM-GRIDS/data/drought_bom_grids.grid_tas.csv' WITH DELIMITER ',' CSV HEADER"
 
-pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"grid_nsw\" delphe | psql -h 115.146.95.82 -U postgres ewedb
-pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_1890_2008_4\" delphe | 
+  psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.rain_sa_1890_2008_4) TO '~/projects/DROUGHT-BOM-GRIDS/data/drought_bom_grids.rain_sa_1890_2008.csv' WITH DELIMITER ',' CSV HEADER"
+  psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.grid_sa) TO '~/projects/DROUGHT-BOM-GRIDS/data/drought_bom_grids.grid_sa.csv' WITH DELIMITER ',' CSV HEADER"
 
+  psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.rain_wa_1890_2008_4) TO '~/projects/DROUGHT-BOM-GRIDS/data/drought_bom_grids.rain_wa_1890_2008.csv' WITH DELIMITER ',' CSV HEADER"
+  psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.grid_wa) TO '~/projects/DROUGHT-BOM-GRIDS/data/drought_bom_grids.grid_wa.csv' WITH DELIMITER ',' CSV HEADER"
+
+  psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.rain_nt_1890_2008_4) TO '~/projects/DROUGHT-BOM-GRIDS/data/drought_bom_grids.rain_nt_1890_2008.csv' WITH DELIMITER ',' CSV HEADER"
+  psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.grid_nt) TO '~/projects/DROUGHT-BOM-GRIDS/data/drought_bom_grids.grid_nt.csv' WITH DELIMITER ',' CSV HEADER"
+
+  psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.rain_act_1890_2008_4) TO '~/projects/DROUGHT-BOM-GRIDS/data/drought_bom_grids.rain_act_1890_2008.csv' WITH DELIMITER ',' CSV HEADER"
+  psql -h 130.56.102.41 -d delphe -U ivan_hanigan -c "\copy (select * from bom_grids.grid_act) TO '~/projects/DROUGHT-BOM-GRIDS/data/drought_bom_grids.grid_act.csv' WITH DELIMITER ',' CSV HEADER"
+    
 #+end_src
 
+    
+* COMMENT load from csv
+*** COMMENT load_bom_grids-code
+#+name:load_bom_grids
+#+begin_src R :session *R* :tangle no :exports none :eval no
+  #### name:load_bom_grids####
+  library(swishdbtools)
+  ch <- connect2postgres2("postgis_hanigan")
+  dbSendQuery(ch, "CREATE SCHEMA bom_grids")
+  dbSendQuery(ch, "grant usage on schema bom_grids to ivan_hanigan")
+  
+  dir("data")
+  args(load2postgres)
+  load2postgres("data/drought_bom_grids.grid_nsw.csv", "bom_grids",
+                "grid_nsw", pguser = "postgres",
+                db = "django", ip = "localhost", printcopy = F)
+  dbSendQuery(ch, "grant all on table bom_grids.grid_nsw to ivan_hanigan")
+  dbSendQuery(ch, "alter table")
+  
+  
+#+end_src
 
-
-* DEPRECATED electorates stuff
+* COMMENT DEPRECATED electorates stuff
 #+name:electorates
 #+begin_src R :session *shell* :tangle src/electorates.r :exports none :eval no
 ###########################################################################
@@ -117,7 +172,110 @@ pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_
 
 #+end_src
 
-* Metadata
+* COMMENT Metadata
+*** COMMENT add metadata using EML-code
+#+name:add metadata using EML
+#+begin_src R :session *R* :tangle code/add metadata using EML.R :exports none :eval no
+  #### name:add metadata using EML ####
+  library(devtools)
+  install_github("ROpenSci/EML")
+  library(ExploratoryAnalysisTemplate)
+  txt  <- exploratory_analysis_template(projdir = "~/projects/DROUGHT-BOM-GRIDS/", packagedir = "data", outfile = "data", indir = "data", 
+      infile = "data", titl = "DROUGHT-BOM-GRIDS", show_header = T, show_geo = T, minimal = T, 
+      rmarkdown = !minimal, show_eml = T) 
+  cat(txt)
+  
+  
+  "
+  DROUGHT-BOM-GRIDS
+  ---
+  "
+  
+  # Project: temp123
+  # Author: Your Name
+  # Maintainer: Who to complain to <yourfault@somewhere.net>
+  
+  #### Set any global variables here ####
+  projdir <- "~/projects/DROUGHT-BOM-GRIDS/"
+  outdir <- file.path(projdir, "data")
+  # if(!file.exists(outdir)) dir.create(outdir)
+  #outfile <- "data"
+  #file.path(outdir, outfile) 
+  setwd(projdir)
+  
+  #### Load any needed libraries #### 
+  #library(gdata)
+  library(disentangle)
+  library(EML)
+  library(sqldf)
+  #library(taxize)
+  indir <- "data"
+  
+  #### Identify your data inputs ####
+  dir(indir)
+  infile <- "drought_bom_grids.rain_act_1890_2008.csv"
+  
+   
+  #### load ####
+  print(file.path(indir,infile))
+  dat <- read.csv(file.path(indir,infile), stringsAsFactors = F)
+      
+  #### check ####
+  str(dat)
+  # write down the nrows and ncols here for future reference
+  head(dat) 
+  tail(dat)
+  summary(dat)
+  # lapply(dat, table)
+   
+  
+  #### clean ####
+  #names(dat) <- lcu(names(dat))    
+  
+  
+   
+  #DROUGHT-BOM-GRIDS Geographic Coverage 
+  gis_dir <- "data"
+  flist <- dir(gis_dir)
+  flist
+  # flist[grep(XXX, flist)]
+  fi = "drought_bom_grids.grid_nsw.csv"
+  d <- read.csv(file.path(gis_dir,fi))
+  epsg <- make_EPSG()
+  # epsg[grep("GDA94$", epsg$note),]
+  projection  <- "4283"
+  head(d)
+  shp <- SpatialPointsDataFrame(cbind(d$long, d$lat), d[,1:3],
+    proj4string=CRS(epsg$prj4[grep(projection,epsg$code)]))
+  plot(shp)
+  #str(shp)
+  loc  <- morpho_bounding_box(x = shp)
+  #loc
+   
+  
+  #### Write out a CSV and an EML file ####
+  str(dat)
+  eml_write(dat, 
+            col.defs = col.defs, 
+            unit.defs = unit.defs, 
+            creator = "Carl Boettiger <cboettig@ropensci.org>", 
+            file = "EML_example.xml")
+  
+  unit_defs <- reml_boilerplate(dat, enumerated = NA)
+  col_defs <- names(dat)
+  ds <- eml_dataTable(dat,
+                col.defs = col_defs,
+                unit.defs = unit_defs,
+                description = "TBA", 
+                filename = "data")
+  # now write EML metadata file
+  eml_config(creator="TBA")
+  eml_write(ds,
+            file = "data",
+            title = "TBA"
+  )
+  
+#+end_src
 
 *** add metadata using df2ddi bomgrids
 #+name:add_ddi
@@ -227,7 +385,7 @@ pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_
 
 
 
-* CLEAN
+* COMMENT CLEAN
 ** TODO Check an electorate
 #+name:check
 #+begin_src R :session *R* :tangle src/check.r :exports none :eval no
@@ -555,145 +713,145 @@ pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_
 To do an independent validation of the droughts I Want to reproduce the maps from http://www.dpi.nsw.gov.au/agriculture/emergency/drought/planning/climate/advance-retreat
 #+name:testDroughtSmallMultiples
 #+begin_src R :session *shell* :tangle src/testDroughtSmallMultiples.R :exports none :eval no
-    ################################################################
-    # name:testDroughtSmallMultiples
-    source('~/tools/delphe-project/tools/connect2postgres.r')
-    pwd <-  readline('session password = ')
-    ch <- connect2postgres('130.56.102.41','delphe','ivan_hanigan',p=pwd)
-    ewedb <- connect2postgres('115.146.94.209','ewedb','ivan_hanigan',p=pwd)
-    source('~/tools/delphe-project/tools/readOGR2.r')
-    require('rgdal')
-    source('~/tools/delphe-project/tools/fixGeom.r')
-  
-  d <- readOGR2('130.56.102.41','ivan_hanigan','delphe','spatial.admin00_aus_states', p = pwd)
-  d <- d[d@data$admin_name == 'New South Wales',]
-  plot(d)
-    for(year in 1970:1980){
-    #year <- 1972
-      for(month in 1:12){
-      #  month <- 12
-      psql=paste('select t2.gid,year,month,t1.count,t1.rain,
-       case when t1.count >= 4  then 1 else 0 end as threshold,
-       t2.the_geom
-       into tempdrt',year,month,'
-                 from bom_grids.rain_NSW_1890_2008_4 as t1
-                 join bom_grids.grid_NSW as t2
-                 on t1.gid=t2.gid
-                 where year=',year,' and month = ',month,' and t1.count >= 5;
-                 alter table tempdrt',year,month,' add column gid2 serial primary key;
-                 ',sep='')
-      dbSendQuery(ewedb, psql)
-  
-      #fixGeom(schema='ivan_hanigan',table=paste('tempdrt',year,month,sep=''))
-      dbSendQuery(ewedb,
-      #cat(
-      paste("
-       INSERT INTO geometry_columns(f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, \"type\")
-       SELECT '', 'ivan_hanigan', 'tempdrt",year,month,"', 'the_geom', ST_CoordDim(the_geom), ST_SRID(the_geom), GeometryType(the_geom)
-       FROM ivan_hanigan.tempdrt",year,month," LIMIT 1;
-                  ",sep=""))
+      ################################################################
+      # name:testDroughtSmallMultiples
+      source('~/tools/delphe-project/tools/connect2postgres.r')
+      pwd <-  readline('session password = ')
+      ch <- connect2postgres('130.56.102.41','delphe','ivan_hanigan',p=pwd)
+      ewedb <- connect2postgres('115.146.94.209','ewedb','ivan_hanigan',p=pwd)
+      source('~/tools/delphe-project/tools/readOGR2.r')
+      require('rgdal')
+      source('~/tools/delphe-project/tools/fixGeom.r')
+    
+    d <- readOGR2('130.56.102.41','ivan_hanigan','delphe','spatial.admin00_aus_states', p = pwd)
+    d <- d[d@data$admin_name == 'New South Wales',]
+    plot(d)
+      for(year in 1970:1980){
+      #year <- 1972
+        for(month in 1:12){
+        #  month <- 12
+        psql=paste('select t2.gid,year,month,t1.count,t1.rain,
+         case when t1.count >= 4  then 1 else 0 end as threshold,
+         t2.the_geom
+         into tempdrt',year,month,'
+                   from bom_grids.rain_NSW_1890_2008_4 as t1
+                   join bom_grids.grid_NSW as t2
+                   on t1.gid=t2.gid
+                   where year=',year,' and month = ',month,' and t1.count >= 5;
+                   alter table tempdrt',year,month,' add column gid2 serial primary key;
+                   ',sep='')
+        dbSendQuery(ewedb, psql)
+    
+        #fixGeom(schema='ivan_hanigan',table=paste('tempdrt',year,month,sep=''))
+        dbSendQuery(ewedb,
+        #cat(
+        paste("
+         INSERT INTO geometry_columns(f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, \"type\")
+         SELECT '', 'ivan_hanigan', 'tempdrt",year,month,"', 'the_geom', ST_CoordDim(the_geom), ST_SRID(the_geom), GeometryType(the_geom)
+         FROM ivan_hanigan.tempdrt",year,month," LIMIT 1;
+                    ",sep=""))
+        }
       }
-    }
-  
-  
-  
- png('droughtAdvRet_19002008.png',res=150,height=20,width=5)
-  par(mfrow=c(110,13),mar=c(0,0,0,0))
-  plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
-
-  for(mm in c('j','f','m','a', 'm','j','j','a','s','o','n','d')){
-  plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
-  text(1.5,1.5,mm)
-  }
-
-  for(j in 1972:1973){
-  print(j)
-  year <- j
-           plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
-           text(1.5,1.5,j) #substr(j,3,4))
-
-           for(i in 1:12){
-             plot(d)
-             month <- i
-             try(shp <- readOGR2('115.146.94.209','ivan_hanigan','ewedb',paste('tempdrt',year,month,sep=''),
-             p = pwd)
-             )
-             if(exists('shp')) plot(shp,add=T, col='black')
-             #plot_drought(j,i)
-             rm(shp)
-           }
-
-  }
-
-  # this is the first one 1972-2008 savePlot('droughtAdvRet.jpg',type=c('jpg'))
-  #savePlot('droughtAdvRet_19002008.tiff',type=c('tiff'))
-  dev.off()
-  
-  
-<<<<<<< HEAD
-=======
-  # going to want to do a straight copy and an enhanced version with
-  # continuous levels?  not yet
-  dir.create('data')
-  setwd('data')
-  for(j in 1970:1980){
-  #j <- 1970
-    print(j)
-      year <- j
-  
-               for(i in 1:12){
-  #i <- 1
-                 month <- i
-                 try(shp <- readOGR2('115.146.94.209','ivan_hanigan','ewedb',paste('tempdrt',year,month,sep=''),
-                 p = pwd)
-                 )
-                 if(exists('shp')) {writeOGR(shp,
-                 paste('tempdrt',year,month,'.shp',sep=''), layer =
-                 paste('tempdrt',year,month,sep=''), 'ESRI Shapefile')
-                                  }
-  # plot(shp,add=T, col='black')
-                 #plot_drought(j,i)
-               }
-  
-      }
-  
-    png('../droughtAdvRet_19722008.png',res=150,height=2000,width=1000)
-    par(mfrow=c(41,13),mar=c(0,0,0,0))
+    
+    
+    
+   png('droughtAdvRet_19002008.png',res=150,height=20,width=5)
+    par(mfrow=c(110,13),mar=c(0,0,0,0))
     plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
   
-    for(mm in toupper(c('j','f','m','a', 'm','j','j','a','s','o','n','d'))){
-      plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
-      text(1.5,1.5,mm)
-      }
+    for(mm in c('j','f','m','a', 'm','j','j','a','s','o','n','d')){
+    plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
+    text(1.5,1.5,mm)
+    }
   
-      for(j in 1972:2011){
-      print(j)
-      year <- j
-               plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
-               text(1.5,1.5,j) #substr(j,3,4))
+    for(j in 1972:1973){
+    print(j)
+    year <- j
+             plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
+             text(1.5,1.5,j) #substr(j,3,4))
   
-               for(i in 1:12){
-                 plot(d)
-                 month <- i
-  
-               try(shp <- readOGR(paste('tempdrt',year,month,'.shp',sep=''),paste('tempdrt',year,month,sep='')
+             for(i in 1:12){
+               plot(d)
+               month <- i
+               try(shp <- readOGR2('115.146.94.209','ivan_hanigan','ewedb',paste('tempdrt',year,month,sep=''),
+               p = pwd)
                )
-               )
-               if(exists('shp')) { plot(shp,add=T, col='black')}
+               if(exists('shp')) plot(shp,add=T, col='black')
+               #plot_drought(j,i)
                rm(shp)
-               }
+             }
   
-      }
->>>>>>> 8a0d382aeffbcda7bb08a735ffc7253b7ba24afc
+    }
   
-      # this is the first one 1972-2008 savePlot('droughtAdvRet.jpg',type=c('jpg'))
-      #savePlot('droughtAdvRet_19002008.tiff',type=c('tiff'))
-      dev.off()
-  
-    dbSendQuery(ewedb,
-                paste('drop table tempdrt',year,month,sep='')
-                )
-  
+    # this is the first one 1972-2008 savePlot('droughtAdvRet.jpg',type=c('jpg'))
+    #savePlot('droughtAdvRet_19002008.tiff',type=c('tiff'))
+    dev.off()
+    
+    
+  <<<<<<< HEAD
+  =======
+    # going to want to do a straight copy and an enhanced version with
+    # continuous levels?  not yet
+    dir.create('data')
+    setwd('data')
+    for(j in 1970:1980){
+    #j <- 1970
+      print(j)
+        year <- j
+    
+                 for(i in 1:12){
+    #i <- 1
+                   month <- i
+                   try(shp <- readOGR2('115.146.94.209','ivan_hanigan','ewedb',paste('tempdrt',year,month,sep=''),
+                   p = pwd)
+                   )
+                   if(exists('shp')) {writeOGR(shp,
+                   paste('tempdrt',year,month,'.shp',sep=''), layer =
+                   paste('tempdrt',year,month,sep=''), 'ESRI Shapefile')
+                                    }
+    # plot(shp,add=T, col='black')
+                   #plot_drought(j,i)
+                 }
+    
+        }
+    
+      png('../droughtAdvRet_19722008.png',res=150,height=2000,width=1000)
+      par(mfrow=c(41,13),mar=c(0,0,0,0))
+      plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
+    
+      for(mm in toupper(c('j','f','m','a', 'm','j','j','a','s','o','n','d'))){
+        plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
+        text(1.5,1.5,mm)
+        }
+    
+        for(j in 1972:2011){
+        print(j)
+        year <- j
+                 plot(0:3,0:3,axes=F,ylab='',xlab='',type='n')
+                 text(1.5,1.5,j) #substr(j,3,4))
+    
+                 for(i in 1:12){
+                   plot(d)
+                   month <- i
+    
+                 try(shp <- readOGR(paste('tempdrt',year,month,'.shp',sep=''),paste('tempdrt',year,month,sep='')
+                 )
+                 )
+                 if(exists('shp')) { plot(shp,add=T, col='black')}
+                 rm(shp)
+                 }
+    
+        }
+  >>>>>>> 8a0d382aeffbcda7bb08a735ffc7253b7ba24afc
+    
+        # this is the first one 1972-2008 savePlot('droughtAdvRet.jpg',type=c('jpg'))
+        #savePlot('droughtAdvRet_19002008.tiff',type=c('tiff'))
+        dev.off()
+    
+      dbSendQuery(ewedb,
+                  paste('drop table tempdrt',year,month,sep='')
+                  )
+    
 #+end_src
 
 This is a cool product by the NSW Dept Primary Industry.
