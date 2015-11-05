@@ -175,7 +175,7 @@ pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_
 * COMMENT Metadata
 *** COMMENT add metadata using EML-code
 #+name:add metadata using EML
-#+begin_src R :session *R* :tangle code/add metadata using EML.R :exports none :eval no
+#+begin_src R :session *R* :tangle no :exports none :eval no
   #### name:add metadata using EML ####
   library(devtools)
   install_github("ROpenSci/EML")
@@ -384,6 +384,55 @@ pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_
 
 
 
+*** COMMENT 2015-10-16 add variable level info to data inventory
+#+name:2015-10-15
+#+begin_src R :session *R* :tangle no :exports none :eval no
+  #### name:2015-10-15 ####
+  
+  #### Set any global variables here ####
+  projdir <- "~/projects/DROUGHT-BOM-GRIDS/"
+  outdir <- file.path(projdir, "data")
+  # if(!file.exists(outdir)) dir.create(outdir)
+  #outfile <- "data"
+  #file.path(outdir, outfile) 
+  setwd(projdir)
+  
+  #### Load any needed libraries #### 
+  #library(gdata)
+  library(disentangle)
+  library(sqldf)
+  #library(taxize)
+  indir <- "data"
+  
+  #### Identify your data inputs ####
+  dir(indir)
+  infile <- "drought_bom_grids.rain_act_1890_2008.csv"
+  
+   
+  #### load ####
+  print(file.path(projdir, indir,infile))
+  dat <- read.csv(file.path(indir,infile), stringsAsFactors = F)
+      
+  #### check ####
+  str(dat)
+  # write down the nrows and ncols here for future reference
+  # 'data.frame': 4260 obs. of  11 variables:
+  head(dat) 
+  tail(dat)
+  summary(dat)
+  
+  vl  <- variable_names_and_labels(infile = file.path(indir, infile))
+  for(i in 1:nrow(vl)){
+  #  i=1
+  inst <- "INSERT INTO attr(
+              entity_id, variable_name, variable_definition, measurement_scales, 
+              units, value_labels)
+      VALUES ("
+    txt  <- paste(c(34, vl[i,1:(ncol(vl)-3)]), sep = "", collapse = "','")
+  txt <- gsub("34'", "34", txt)
+  cat(sprintf("%s\n%s');\n", inst,txt))
+  }
+#+end_src
 
 * COMMENT CLEAN
 ** TODO Check an electorate
