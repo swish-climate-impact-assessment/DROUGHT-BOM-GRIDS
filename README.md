@@ -1,6 +1,13 @@
 DROUGHT-BOM-GRIDS
 =================
 
+LICENCE: CC BY 4.0, Creative Commons - Attribution 4.0 http://creativecommons.org/licenses/by/4.0/
+
+This work is licensed under Creative Commons - Attribution 4.0. This allows others to copy, distribute and create derivative works provided that they credit the original source.
+
+NOTE:
+---
+
 This repo is deprecated.  Please see [https://github.com/ivanhanigan/HutchinsonDroughtIndex](https://github.com/ivanhanigan/HutchinsonDroughtIndex) for ongoing work such as [this exploratory data analysis](http://ivanhanigan.github.io/2013/11/github-and-reproducible-research-report-casestudy-hutchinson-drought-index/)
 
 
