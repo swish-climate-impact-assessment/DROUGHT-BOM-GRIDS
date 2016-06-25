@@ -126,18 +126,84 @@ pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_
 #+begin_src R :session *R* :tangle no :exports none :eval no
   #### name:load_bom_grids####
   library(swishdbtools)
-  ch <- connect2postgres2("postgis_hanigan")
-  dbSendQuery(ch, "CREATE SCHEMA bom_grids")
-  dbSendQuery(ch, "grant usage on schema bom_grids to ivan_hanigan")
-  
+  ch <- connect2postgres2("ewedb_staging")
+  #dbSendQuery(ch, "CREATE SCHEMA bom_grids")
+  #dbSendQuery(ch, "grant all on schema bom_grids to ivan_hanigan")
+  setwd("~/projects/DROUGHT-BOM-GRIDS")
   dir("data")
-  args(load2postgres)
-  load2postgres("data/drought_bom_grids.grid_nsw.csv", "bom_grids",
-                "grid_nsw", pguser = "postgres",
-                db = "django", ip = "localhost", printcopy = F)
-  dbSendQuery(ch, "grant all on table bom_grids.grid_nsw to ivan_hanigan")
-  dbSendQuery(ch, "alter table")
+  #args(load2postgres)
+  states  <- c("vic", "sa", "wa", "nt", "tas", "nsw", "act", "qld")
+  for(ste in states){
+  #
+  #  ste  <- "qld"
+  load2postgres(sprintf("data/drought_bom_grids.grid_%s.csv", ste),
+                "bom_grids",
+                sprintf("grid_%s", ste),
+                pguser = "ivan_hanigan",
+                db = "ewedb_staging", ip = "localhost", printcopy = F)
+  #dbSendQuery(ch, "grant all on table bom_grids.grid_%s to ivan_hanigan")
+  #dbSendQuery(ch, "alter table")
   
+  # got from bom grids
+  # make points
+  dbSendQuery(ch,sprintf("SELECT AddGeometryColumn('bom_grids', 'grid_%s', 'the_geom_pt', 4283, 'POINT', 2)", ste))
+  #dbSendQuery(ch,sprintf("ALTER TABLE bom_grids.grid_%s ADD CONSTRAINT
+  # geometry_valid_check CHECK (isvalid(the_geom_pt))", ste))
+    ch <- connect2postgres2("ewedb_staging")
+  
+  dbSendQuery(ch,sprintf("
+          UPDATE bom_grids.grid_%s
+          SET the_geom_pt=st_GeomFromText(
+                  'POINT('||
+                  long ||
+                  ' '||
+                  lat ||')'
+                  ,4283)", ste))
+  
+  # make polygons
+  
+  dbSendQuery(ch,sprintf("SELECT AddGeometryColumn( 'bom_grids','grid_%s', 'geom', 4283, 'POLYGON', 2)", ste))
+  #--ALTER TABLE bom_grids.grid_%s DROP CONSTRAINT
+  #enforce_geotype_the_geom;
+    ch <- connect2postgres2("ewedb_staging")
+  
+  dbSendQuery(ch,sprintf("UPDATE bom_grids.grid_%s SET geom=st_GeomFromText('POLYGON((
+  '|| long-0.125 || ' '|| lat-0.125 ||',
+  '|| long-0.125 || ' '|| lat+0.125 ||',
+  '|| long+0.125 || ' '|| lat+0.125 ||',
+  '|| long+0.125 || ' '|| lat-0.125 ||',
+  '|| long-0.125 || ' '|| lat-0.125 ||'
+  ))' ,4283)", ste))
+  
+  
+  dbSendQuery(ch,sprintf("alter table bom_grids.grid_%s add primary key (gid)", ste))
+  
+  }
+  
+  
+  # create master table
+  dbSendQuery(ch,"drop table bom_grids.grid_aus;
+          CREATE TABLE bom_grids.grid_aus (
+          gid int4,
+          long numeric,
+          lat numeric,
+          wronglatitude double precision,
+          the_geom character,
+          admin_name varchar(50),
+          the_geom_pt geometry(Point,4283),
+          geom geometry(Polygon,4283),
+          constraint grid_aus_pkey primary key (gid, lat, long)
+          ); 
+  ")
+  for(i in states[-1]){
+  #  i = states[1]
+  stelbl <- i
+  dbSendQuery(ch,
+  paste('
+  alter table  bom_grids.grid_',stelbl,' inherit  bom_grids.grid_aus;
+  ',sep='')
+  )
+  }
   
 #+end_src
 
