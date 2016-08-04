@@ -49,46 +49,55 @@ Before restoring an SQL dump, all the users who own objects or were granted perm
 #+end_src
 
 * COMMENT dump and restore
-#+begin_src sh :session *shell* :tangle src/dump and restore.r :exports none :eval no
-###########################################################################
-# newnode: dump and restore
-#/usr/bin/pg_dump --host 130.56.102.41 --port 5432 --username "ivan_hanigan" --role "ivan_hanigan" --no-password  --format plain --encoding UTF8 --verbose --file "/home/ivan_hanigan/projects/DROUGHT-BOM-GRIDS/data/bom_grids.rain_nsw_1890_2008_4.backup" --table "bom_grids.rain_nsw_1890_2008_4" "delphe"
-
-
-#pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -F t -v -i -f "/home/ivan_hanigan/projects/DROUGHT-BOM-GRIDS/data/bom_grids.rain_nsw_1890_2008_4.backup" -t \"bom_grids\".\"rain_nsw_1890_2008_4\" delphe
-#cd /home/ivan_hanigan/projects/DROUGHT-BOM-GRIDS/data/
-#psql -h 115.146.95.82 -d ewedb -U postgres < "bom_grids.rain_nsw_1890_2008_4.backup"
-
-pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"grid_aus\" delphe | psql -h 115.146.95.82 -U postgres ewedb
-pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"grid_nsw\" delphe | psql -h 115.146.95.82 -U postgres ewedb
-
-#in pgadmin
-CREATE TABLE bom_grids.rain_aus_1890_2008_4
-(
-  gid integer NOT NULL,
-  timeid integer NOT NULL,
-  year integer,
-  month integer,
-  rain double precision,
-  rain6mo double precision,
-  pctile double precision,
-  rescaledpctile double precision,
-  indexbelowthreshold double precision,
-  sum double precision,
-  count integer,
-  CONSTRAINT r_aus_pk PRIMARY KEY (gid , timeid )
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE bom_grids.rain_aus_1890_2008_4
-  OWNER TO postgres;
-GRANT ALL ON TABLE bom_grids.rain_aus_1890_2008_4 TO postgres;
-GRANT ALL ON TABLE bom_grids.rain_aus_1890_2008_4 TO public_group;
-
-
-
-pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_1890_2008_4\" delphe | psql -h 115.146.95.82 -U postgres ewedb
+#+begin_src R :session *R* :tangle no :exports none :eval no
+  ###########################################################################
+  # newnode: dump and restore
+  #/usr/bin/pg_dump --host 130.56.102.41 --port 5432 --username "ivan_hanigan" --role "ivan_hanigan" --no-password  --format plain --encoding UTF8 --verbose --file "/home/ivan_hanigan/projects/DROUGHT-BOM-GRIDS/data/bom_grids.rain_nsw_1890_2008_4.backup" --table "bom_grids.rain_nsw_1890_2008_4" "delphe"
+  
+  
+  #pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -F t -v -i -f "/home/ivan_hanigan/projects/DROUGHT-BOM-GRIDS/data/bom_grids.rain_nsw_1890_2008_4.backup" -t \"bom_grids\".\"rain_nsw_1890_2008_4\" delphe
+  #cd /home/ivan_hanigan/projects/DROUGHT-BOM-GRIDS/data/
+  #psql -h 115.146.95.82 -d ewedb -U postgres < "bom_grids.rain_nsw_1890_2008_4.backup"
+  
+  pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"grid_aus\" delphe | psql -h 115.146.95.82 -U postgres ewedb
+  pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"grid_nsw\" delphe | psql -h 115.146.95.82 -U postgres ewedb
+  pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"grid_vic\" delphe | psql -h gislibrary.anu.edu.au -U ivan_hanigan ewedb
+  # FAILS, GEOMETRY NOT EXIST
+  
+  # JUST THE TABLES
+  #in pgadmin
+  ste <- "aus" # this is master table, do not do this for states as they
+               # inherit and keep indexes
+  cat(paste("
+  CREATE TABLE bom_grids.rain_",ste,"_1890_2008_4
+  (
+    gid integer NOT NULL,
+    timeid integer NOT NULL,
+    year integer,
+    month integer,
+    rain double precision,
+    rain6mo double precision,
+    pctile double precision,
+    rescaledpctile double precision,
+    indexbelowthreshold double precision,
+    sum double precision,
+    count integer,
+    CONSTRAINT r_",ste,"_pk PRIMARY KEY (gid , timeid )
+  )
+  WITH (
+    OIDS=FALSE
+  );
+  ALTER TABLE bom_grids.rain_",ste,"_1890_2008_4
+    OWNER TO ivan_hanigan;
+  GRANT SELECT ON TABLE bom_grids.rain_",ste,"_1890_2008_4 TO public_group;
+  
+  
+  
+  pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_",ste,"_1890_2008_4\" delphe | psql -h gislibrary.anu.edu.au -U ivan_hanigan ewedb
+  pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_",ste,"_1890_2008_4\" delphe | psql -h localhost -U ivan_hanigan ewedb_staging
+  
+  ", sep = "")
+  )
 #+end_src
 * COMMENT downloads
 *** COMMENT nsw-code
@@ -120,7 +129,7 @@ pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_
 #+end_src
 
     
-* COMMENT load from csv
+* COMMENT load new grid shps from csv convert to shp
 *** COMMENT load_bom_grids-code
 #+name:load_bom_grids
 #+begin_src R :session *R* :tangle no :exports none :eval no
@@ -135,7 +144,7 @@ pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_
   states  <- c("vic", "sa", "wa", "nt", "tas", "nsw", "act", "qld")
   for(ste in states){
   #
-  #  ste  <- "qld"
+  #  ste  <- "act"
   load2postgres(sprintf("data/drought_bom_grids.grid_%s.csv", ste),
                 "bom_grids",
                 sprintf("grid_%s", ste),
@@ -181,7 +190,7 @@ pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_
   }
   
   
-  # create master table
+  # create master table BAH SEE NEXT CHUNK
   dbSendQuery(ch,"drop table bom_grids.grid_aus;
           CREATE TABLE bom_grids.grid_aus (
           gid int4,
@@ -205,6 +214,97 @@ pg_dump -h 130.56.102.41 -p 5432 -U ivan_hanigan -i -t \"bom_grids\".\"rain_nsw_
   )
   }
   
+#+end_src
+*** MASTER GRID and drought
+drop TABLE bom_grids.grid_aus ;
+CREATE TABLE bom_grids.grid_aus (
+          gid int4,
+          "long" numeric,
+          lat numeric,
+          wronglatitude numeric,
+          the_geom varchar(255),
+          admin_name varchar(255),
+          the_geom_pt geometry(Point,4283),
+          geom geometry(Polygon,4283),
+          constraint grid_aus_pkey primary key (gid, lat, long)
+          )
+          
+alter table bom_grids.grid_qld alter column long set not null;
+alter table bom_grids.grid_qld alter column lat set not null ;         
+alter table bom_grids.grid_qld  inherit bom_grids.grid_aus;
+
+
+alter table bom_grids.grid_act alter column long type numeric;
+alter table bom_grids.grid_act alter column long set not null;
+alter table bom_grids.grid_act alter column lat set not null ;         
+alter table bom_grids.grid_act  inherit bom_grids.grid_aus;
+
+alter table bom_grids.grid_nsw alter column long set not null;
+alter table bom_grids.grid_nsw alter column lat set not null ;         
+alter table bom_grids.grid_nsw  inherit bom_grids.grid_aus;
+
+alter table bom_grids.grid_vic alter column long set not null;
+alter table bom_grids.grid_vic alter column lat set not null ;         
+alter table bom_grids.grid_vic  inherit bom_grids.grid_aus;
+
+
+
+alter table bom_grids.grid_sa alter column long set not null;
+alter table bom_grids.grid_sa alter column lat set not null ;         
+alter table bom_grids.grid_sa  inherit bom_grids.grid_aus;
+
+
+
+alter table bom_grids.grid_nt alter column long set not null;
+alter table bom_grids.grid_nt alter column lat set not null ;         
+alter table bom_grids.grid_nt  inherit bom_grids.grid_aus;
+
+
+
+alter table bom_grids.grid_wa alter column long set not null;
+alter table bom_grids.grid_wa alter column lat set not null ;         
+alter table bom_grids.grid_wa  inherit bom_grids.grid_aus;
+
+
+
+alter table bom_grids.grid_tas alter column long set not null;
+alter table bom_grids.grid_tas alter column lat set not null ;         
+alter table bom_grids.grid_tas  inherit bom_grids.grid_aus;
+
+
+
+drop table Drt200712;
+select t2.gid,year,month,t1.count, t1.sum ,t1.rain, rescaledpctile, t2.geom
+into public.Drt200712
+from bom_grids.rain_aus_1890_2008_4 as t1
+join
+bom_grids.grid_aus t2
+on t1.gid=t2.gid
+where year=2007 and month = 12;
+
+
+
+*** failed to instead do the pgdump = ndims(geometryf not exist?)
+cd /home/ivan_hanigan/projects/DROUGHT-BOM-GRIDS/data/
+psql -h localhost -d ewedb_staging -U ivan_hanigan < "bom_grids.grid_aus.backup"
+psql -h localhost -d ewedb_staging -U ivan_hanigan < "bom_grids.grid_nsw.backup"
+
+SET
+ERROR:  function public.ndims(public.geometry) does not exist
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+ERROR:  relation "bom_grids.grid_nsw" does not exist
+
+
+*** TODO so just load each state to qgis and export as shp
+to data_derived
+*** COMMENT check
+#+name:check
+#+begin_src R :session *R* :tangle no :exports none :eval no
+  'name:check'
+  library(rgdal)
+  
+  shp  <- readOGR("data_derived", "grid_wa")
+  plot(shp)
 #+end_src
 
 * COMMENT DEPRECATED electorates stuff
