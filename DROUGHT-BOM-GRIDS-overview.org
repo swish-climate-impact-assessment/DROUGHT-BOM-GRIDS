@@ -271,7 +271,7 @@ alter table bom_grids.grid_tas alter column long set not null;
 alter table bom_grids.grid_tas alter column lat set not null ;         
 alter table bom_grids.grid_tas  inherit bom_grids.grid_aus;
 
-
+alter table bom_grids.rain_nt_1890_2008_4  inherit bom_grids.rain_aus_1890_2008_4;
 
 drop table Drt200712;
 select t2.gid,year,month,t1.count, t1.sum ,t1.rain, rescaledpctile, t2.geom
